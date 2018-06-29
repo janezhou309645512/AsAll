@@ -1,0 +1,31 @@
+android:
+1.android的基本架构与工具类:okhttp,轮播图，RecyclerView,万能适配器
+2.分析几套完整的app源码
+1)   博客  ：https://github.com/GcsSloop/diycode
+2）今日头条：https://github.com/iMeiji/Toutiao
+3）斗鱼直播：https://github.com/TeamCodeForGit/DouYu#4.0.0
+
+
+
+
+一般面试涉及到的 ：
+
+
+
+1.处理系统卡顿
+2.OKHTTP的底层协议
+3.多线程
+4.as处理内纯泄漏
+5.listview加载原理
+6.baseadapterview加载
+7.与js交互
+
+内存分析：
+
+
+
+
+
+5.开源社区
+图片加载 Picasso
+视频播放 playerBase3
