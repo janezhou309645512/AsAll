@@ -1,0 +1,109 @@
+1.原材：
+ 单据名称：
+1)采购入库单: -----原材入库， 
+2)工单发料单:------ 原材出库，
+3)生产退料单:-----入库 生产退料
+4)部门领料单：-----出库 生产领料
+
+
+2.成品
+单据名称：
+1）	工单入库单-----成品入库
+2）	送货单 -----成品出库
+
+
+架构设计：
+一．基础资料：人员信息 仓库信息  储位信息
+二．基本功能：
+1）	原材：
+入：采购入库，，生产退料，盘点入库
+出：工单发料，部门领料
+
+2）成品：
+入：工单入库，盘点入库
+出：销售出库
+
+三．报表：
+出入库明细
+库存查询
+物料预警
+
+
+
+表设计：
+人员信息表，仓库信息表，储位信息表  原材入库表 原材出库表 成品入库表 成品出库表
+
+实现方法：
+1)	C#  2008pda+2015exe
+2)	Javaweb+android （需要搭建服务）
+
+
+
+
+原材
+
+入库单查询：
+FNumber
+QTY
+select a.FNumber Fna, c.fnumber materialNumber, sum(b.fqty) QTY, d.FNumber Fnd,tr.FName_l2 TransactionName,costc.FName_l2 costCenterName,ware.FName_l2 warehouseName 
+from new_eas75.T_IM_PurReceivalBill a 
+left join new_eas75.T_IM_PurReceivalEntry b  on a.fid = b.fparentid  
+left join new_eas75.t_bd_material c on b.FMaterialID = c.fid 
+left join new_eas75.T_ORG_BaseUnit d on a.FStorageOrgUnitID = d.fid 
+left join new_eas75.T_SCM_TransactionType tr  on a.FTransactionTypeID = tr.fid 
+left join new_eas75.T_ORG_CostCenter costc  on a.FCostCenterOrgUnitID = costc.fid   
+left join new_eas75.T_DB_WAREHOUSE ware on b.FWarehouseID = ware.fid 
+where a.fnumber =''LLSZQC201806050066'' and b.FStorageOrgUnitID =''/OQAAADENwvM567U'' //单号和组织
+group by  a.FNumber, c.FNumber, d.FNumber, b.FWarehouseID, b.FLocationID, b.FLot,tr.FName_l2,costc.FName_l2,ware.FName_l2'
+
+//出库单查询：
+select a.FNumber Fna, c.fnumber Fnc, sum(b.fqty) FQTY, d.FNumber Fnd,tr.FName_l2 TransactionName ,costc.FName_l2 costCenterName, ware.FName_l2 warehouseName 
+from new_eas75.T_IM_MATERIALREQBILL  a  
+left join new_eas75.T_IM_MATERIALREQBILLENTRY b on a.fid = b.fparentid 
+left join new_eas75.t_bd_material c on b.FMaterialID = c.fid 
+left join new_eas75.T_ORG_BaseUnit d on a.FStorageOrgUnitID = d.fid  
+left join new_eas75.T_SCM_TransactionType tr on a.FTransactionTypeID = tr.fid 
+left join new_eas75.T_ORG_CostCenter costc on a.FCostCenterOrgUnitID = costc.fid    
+left join new_eas75.T_DB_WAREHOUSE ware on b.FWarehouseID = ware.fid 
+where d.FNumber = ''01.01.08'' and a.FNumber = ''REO20180606005291''
+group by  a.FNumber, c.FNumber, d.FNumber, b.FWarehouseID, b.FLocationID, b.FLot,tr.FName_l2,costc.FName_l2,ware.FName_l2'
+
+
+select GUID,NvoicesId,MaterielId,StorageId,ValidTime,Num,CheckTime  
+FROM ls_wms_DeliveryRecord  
+where NvoicesId ='REO20180606005291'
+
+
+
+
+成品
+
+
+成品入库单：
+
+select a.fnumber billNumber,f.FName_l2 TransactionName,c.fnumber materialNumber,b.fqty qty,e.FName_l2 warehouseName,d.FName_l2 costCenterName
+from new_eas75.T_IM_ManufactureRecBill  a 
+join new_eas75.T_IM_ManufactureRecBillEntry  b on a.fid = b.FParentID 
+join new_eas75.t_bd_material c on b.FMaterialID = c.fid 
+join new_eas75.T_ORG_CostCenter d on b.FCostCenterOrgUnitID = d.fid 
+join new_eas75.T_DB_WAREHOUSE  e on b.FWarehouseID = e.fid 
+join new_eas75.T_SCM_TransactionType  f on a.FTransactionTypeID = f.fid 
+where a.fnumber =''PRI20180607000585'' and b.FStorageOrgUnitID =''/OQAAADENwvM567U'''
+
+
+
+成品出库单：
+select a.FNumber Fna, c.fnumber Fnc, sum(b.fqty) FQTY, d.FNumber Fnd,tr.FName_l2 TransactionName,costc.FName_l2 costCenterName,ware.FName_l2 warehouseName 
+from new_eas75.T_IM_SaleIssueBill a  
+left join new_eas75.T_IM_SaleIssueEntry b on a.fid = b.fparentid 
+left join new_eas75.t_bd_material c  on b.FMaterialID = c.fid 
+left join new_eas75.T_ORG_BaseUnit d on a.FStorageOrgUnitID = d.fid 
+left join new_eas75.T_SCM_TransactionType tr   on a.FTransactionTypeID = tr.fid 
+left join new_eas75.T_ORG_CostCenter costc  on a.FCostCenterOrgUnitID = costc.fid   
+left join new_eas75.T_DB_WAREHOUSE ware on b.FWarehouseID = ware.fid 
+where d.FNumber = '01.01.08' and a.FNumber = 'LSSZ1806060075'
+group by  a.FNumber, c.FNumber, d.FNumber, b.FWarehouseID, b.FLocationID, b.FLot,tr.FName_l2,costc.FName_l2,ware.FName_l2'
+
+
+
+
